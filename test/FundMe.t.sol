@@ -3,15 +3,20 @@
 pragma solidity ^0.8.18;
 
 import {Test, console} from "forge-std/Test.sol";
+
+import {DeployFundMe} from "../script/DeployFundMe.s.sol";
+
 import {FundMe} from "../src/FundMe.sol";
 
 contract FundMeTest is Test {
     FundMe fundMe;
 
-    address owner = address(this);
+    // address owner = address(this); <-- this is if the test contract is isolated. If we are using DeployFundMe in our testing suite, then we need to use msg.sender, because DeployFundMe is deployed by msg.sender.
+    address owner = msg.sender;
 
     function setUp() external {
-        fundMe = new FundMe();
+        DeployFundMe deployFundMe = new DeployFundMe();
+        fundMe = deployFundMe.run();
     }
 
     function testMinimumUSDIsFive() public view {
